@@ -4,6 +4,9 @@ import os
 from datetime import datetime, timedelta
 from xlutils.copy import copy
 
+"""
+обязательно перед запуском создать директорию bills
+"""
 
 def get_bill(full_name, city, tel):
 
