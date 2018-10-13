@@ -1,3 +1,4 @@
 *.pyc
 bills/
 params.py
+requirements.txt

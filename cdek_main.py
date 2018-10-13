@@ -1,6 +1,4 @@
-﻿from get_price_cdek import get_price
-from get_city_id import get_id
-from cdek_file_main import load_file
+﻿from cdek_utils import load_file, get_id, get_price
 
 
 def cdek_delivery(city):
@@ -17,4 +15,4 @@ def cdek_delivery(city):
 
 
 if __name__ == '__main__':
-    print(cdek_delivery('Харьков'))
+    print(cdek_delivery('Ростов-на-Дону'))

@@ -1,11 +1,11 @@
-import xlrd
+from xlrd import open_workbook
 import os
 
 def get_id(city):
     filename = 'CDEK_city.xls'
     file_path = os.path.join(os.getcwd(), filename)
 
-    work_book = xlrd.open_workbook(file_path)
+    work_book = open_workbook(file_path)
     work_sheet = work_book.sheet_by_index(0)
 
     names_num = 0
