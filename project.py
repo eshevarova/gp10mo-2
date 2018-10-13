@@ -27,9 +27,17 @@ def get_client_data():
     else:
         return 'Do not use GET, use POST'
 
-@app.route("/sms", methods = 'POST')
-def get_sms_data():
 
+@app.route("/sms", methods = ['POST'])
+def get_sms_data():
+    data = request.get_json()
+    if data['sms_id']:
+        sms_id = data['sms_id']
+    if data['mes']:
+        message = data['mes']
+    if data['phone']:
+        client_tel = data['phone']
+    return json.dumps({'status': 'ok'})
         
 
 if __name__ == "__main__":
