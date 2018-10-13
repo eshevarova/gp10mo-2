@@ -35,3 +35,7 @@ def get_bill(full_name, city, tel):
 
 
     wb.save(new_path)
+
+
+if __name__ == "__main__":
+    get_bill('Шеварова Екатерина Алексеевна', 'Москва', '+79165235185')
