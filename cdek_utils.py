@@ -10,7 +10,6 @@ from xlrd import open_workbook
 from datetime import datetime, timedelta
 from xlutils.copy import copy
 from cdek_parameters import *
-from params_login import *
 
 
 def get_file(url):

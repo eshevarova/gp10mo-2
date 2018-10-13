@@ -1,4 +1,4 @@
 *.pyc
 bills/
-params.py
+cdek_parameters.py
 requirements.txt
