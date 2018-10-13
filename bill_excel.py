@@ -4,9 +4,6 @@ import os
 from datetime import datetime, timedelta
 from xlutils.copy import copy
 
-"""
-обязательно перед запуском создать директорию bills
-"""
 
 def get_bill(full_name, city, tel):
 
@@ -26,15 +23,15 @@ def get_bill(full_name, city, tel):
     wb = copy(rb)
     w_sheet = wb.get_sheet(0)
 
-    date_now = datetime.now().strftime('%d.%m.%Y')
+    date_now = datetime.now()
     delta = timedelta(days=3)
 
-    num_and_date = 'Счет-договор на оплату № %s от %s' % (num, date_now)
+    num_and_date = 'Счет-договор на оплату № %s от %s' % (num, date_now.strftime('%d.%m.%Y'))
     client_data = '%s, г. %s, тел.: %s' % (full_name, city, tel)
-    date_pay = (datetime.strptime(date_now, '%d.%m.%Y') + delta).date().strftime('%d.%m.%Y')
-    latest_pay = 'Оплатить не позднее %s' % (date_pay)
+    date_pay = date_now + delta
+    latest_pay = 'Оплатить не позднее %s' % (date_pay.strftime('%d.%m.%Y'))
     
-    new_filename = 'Schet_na_oplatu_%s_от_%s.xls' % (num, date_now)
+    new_filename = 'Schet_na_oplatu_%s_от_%s.xls' % (num, date_now.strftime('%d.%m.%Y'))
     new_path = os.path.join(os.getcwd(), 'bills')
     new_path = os.path.join(new_path, new_filename)
 
@@ -48,4 +45,6 @@ def get_bill(full_name, city, tel):
 
     return new_path
 
-print(get_bill('Шеварова Екатерина Алексеевна', 'Москва', '79165235185'))
+
+if __name__ ==  "__main__":
+    print(get_bill('Шеварова Екатерина Алексеевна', 'Москва', '79165235185'))

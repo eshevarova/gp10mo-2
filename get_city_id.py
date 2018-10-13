@@ -22,3 +22,7 @@ def get_id(city):
         return str(int(city_id))
     elif names_num > 1:
         return 'Overload'
+
+
+if __name__ == "__main__":
+    print(get_id('Москва'))

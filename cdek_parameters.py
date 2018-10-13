@@ -1,7 +1,3 @@
-TEST_LOGIN = '1e2794b09c43e52f81237c5584e8a0b3'
-TEST_PASSWORD = 'ab35baec93e5674fcfc7169c7e31f1c1'
-LOGIN = '225bfbc59c27da22a1c70650877411b4'
-PASSWORD = '85cee36b0ba355b10f2d611c847fde98'
 VERSION = '1.0'
 SENDER_CITY_ID = '414'
 TARIFFS1 = [{'priority': '1', 'id': '62'}, {'priority': '2', 'id': '136'},

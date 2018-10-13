@@ -13,4 +13,6 @@ def load_file():
         get_file(url)
         with open('date.txt', 'w', encoding='utf-8') as f:
             f.write(date_now.strftime('%Y-%m-%d'))
-    return
+
+if __name__ == "__main__":
+    load_file()
