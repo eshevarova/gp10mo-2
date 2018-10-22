@@ -14,5 +14,6 @@ def cdek_delivery(city):
         return 'No delivery'
 
 
+
 if __name__ == '__main__':
     print(cdek_delivery('Ростов-на-Дону'))
