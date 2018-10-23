@@ -2,6 +2,7 @@ from flask import Flask, request, Response
 from iteration_db_sms import add_to_db, sms_message, send_sms
 import json
 
+
 app = Flask(__name__)
 
 @app.route("/")
