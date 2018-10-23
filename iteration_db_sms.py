@@ -16,7 +16,6 @@ def add_to_db(phone, name):
         new_sms_id = Sent(phone=new_client.phone, sms_id=sms_id)
         session.add(new_sms_id)
         session.commit()
-        send_sms(phone, sms_id)
 
 
 def sms_message(key, mes=None):
