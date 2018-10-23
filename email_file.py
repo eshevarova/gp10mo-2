@@ -50,11 +50,11 @@ def send_attachment():
         text = message.as_string()
         server.sendmail(from_address, to_address, text)
     except smtplib.SMTPHeloError as err1:
-        print(err1)
+        logging.error(err1)
     except smtplib.SMTPAuthenticationError as err2:
-        print(err2)
+        logging.error(err2)
     except smtplib.SMTPException as err3:
-        print(err3)
+        logging.error(err3)
     finally:
         server.quit()
 
