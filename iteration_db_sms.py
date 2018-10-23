@@ -16,7 +16,17 @@ def add_to_db(phone, name):
         new_sms_id = Sent(phone=new_client.phone, sms_id=sms_id)
         session.add(new_sms_id)
         session.commit()
-        send_sms(phone, sms_id)
+
+
+def first_sms(num):
+    sms_id = 'not_send'
+    new_id = 'new'
+    sent = session.query(Sent).filter(Sent.phone == num and Sent.sms_id == sms_id).first()
+    sms = SMSC()
+    message = sms_message(sms_id)
+    sms.send_sms(num, message, id=new_id, sender='sms')
+    sent.sms_id = new_id
+    session.commit()
 
 
 def sms_message(key, mes=None):
@@ -26,7 +36,7 @@ def sms_message(key, mes=None):
     :return: str dict value
     """
     messages = {
-        'not_send': 'Здравствуйте! Если хотите узнать стоимость доставки, пришлите цифру 1. Если Вам нужно выставить счетдоговор, пришлите цифру 2.',
+        'not_send': 'Здравствуйте! Для расчета стоимости доставки отправьте в ответном СМС цифру 1. Для получения счет-договора - цифру 2.',
         'new': ['Укажите Ваш город.',
                 'Если планируете приобретение как частное лицо, пришлите в ответном СМС цифру 1, если на организацию цифру 2',
                 'В ближайшее время наш специалист свяжется с Вами и ответит на все интересующие Вас вопросы.'],

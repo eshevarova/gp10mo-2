@@ -9,8 +9,7 @@ from hashlib import md5
 from xlrd import open_workbook
 from datetime import datetime, timedelta
 from xlutils.copy import copy
-from cdek_parameters import *
-
+from project_files.cdek_parameters import *
 
 
 def get_file(url):
