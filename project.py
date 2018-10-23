@@ -1,5 +1,6 @@
 from flask import Flask, request, Response
-from iteration_db_sms import add_to_db, sms_message, send_sms
+from iteration_db_sms import add_to_db, first_sms
+from clean_phone import clean_user_phone
 import json
 
 
@@ -25,10 +26,12 @@ def get_client_data():
         else:
             return json.dumps({'status': 'Bad Request', 'code': 400})
 
+        tel = clean_user_phone(tel)
+
         add_to_db(tel, name)
 
         if name.lower() in ['test', 'тест']:
-            send_sms(tel, 'not_send')
+            first_sms(tel)
 
         return json.dumps({'status': 'Ok', 'code': 200})
     else:
