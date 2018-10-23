@@ -1,7 +1,7 @@
 from db import Clients, session, Sent, Received
 from smsc_api import *
 import time
-
+import datetime
 
 def add_to_db(phone, name):
 
@@ -16,6 +16,11 @@ def add_to_db(phone, name):
         new_sms_id = Sent(phone=new_client.phone, sms_id=sms_id)
         session.add(new_sms_id)
         session.commit()
+
+
+def db_check_date():
+    # return true or false if next_date - old_date >= 1
+    pass
 
 
 def first_sms(num):

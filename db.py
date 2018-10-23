@@ -22,6 +22,7 @@ class Clients(Base):
     city = Column(String(50))
     full_address = Column(String(255))
     company = Column(String(50))
+    date_added = Column(DateTime)
 
 
 class Sent(Base):
