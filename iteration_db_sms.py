@@ -18,6 +18,17 @@ def add_to_db(phone, name):
         session.commit()
 
 
+def first_sms(num):
+    sms_id = 'not_send'
+    new_id = 'new'
+    sent = session.query(Sent).filter(Sent.phone == num and Sent.sms_id == sms_id).first()
+    sms = SMSC()
+    message = sms_message(sms_id)
+    sms.send_sms(num, message, id=new_id, sender='sms')
+    sent.sms_id = new_id
+    session.commit()
+
+
 def sms_message(key, mes=None):
     """
     Возаращает один из ответов в диалоге с клиентом
