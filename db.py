@@ -1,7 +1,6 @@
 """
 Create DB
 """
-
 from sqlalchemy import Column, Integer, String, Text, DateTime, \
                         ForeignKey, create_engine
 from sqlalchemy.ext.declarative import declarative_base
