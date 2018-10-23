@@ -3,11 +3,14 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+import logging
 from project_files.mail_data import login as log
 from project_files.mail_data import password as psw
 from project_files.mail_data import smtpserver as smtp
 from project_files.mail_data import from_address as fa
 from project_files.mail_data import to_address as ta
+
+logging.basicConfig(filename='attachment.log', level=logging.ERROR, format=' %(asctime)s - %(levelname)s - %(messages)s')
 
 
 def send_attachment():
