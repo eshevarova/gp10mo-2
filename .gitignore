@@ -1,4 +1,6 @@
 *.pyc
 bills/
+project_files/
 cdek_parameters.py
+service_access.py
 requirements.txt
