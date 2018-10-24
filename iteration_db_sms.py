@@ -44,6 +44,7 @@ def first_sms(num):
         message = sms_message(sms_id)
         sms.send_sms(num, message, id=new_id, sender='sms')
         sent.sms_id = new_id
+        sent.client.date_added = datetime.date.today()  # обновление даты в табл клиента
         session.commit()
 
 
