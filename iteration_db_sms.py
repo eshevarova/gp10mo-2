@@ -18,26 +18,40 @@ def add_to_db(phone, name):
         session.commit()
 
 
-def db_check_date():
-    # return true or false if next_date - old_date >= 1
-    pass
+def db_check_date(num):
+    """
+    If there is a repeated request through the form, the difference in dates is checked
+
+    :param num:
+    :return:
+    """
+    client = session.query(Clients).filter(Clients.phone == num).first()
+    current_date = datetime.date.today()
+    return current_date - client.date_added >= datetime.timedelta(1)
 
 
 def first_sms(num):
+    """
+    Send the very first sms
+    :param num:
+    :return:
+    """
     sms_id = 'not_send'
     new_id = 'new'
     sent = session.query(Sent).filter(Sent.phone == num and Sent.sms_id == sms_id).first()
-    sms = SMSC()
-    message = sms_message(sms_id)
-    sms.send_sms(num, message, id=new_id, sender='sms')
-    sent.sms_id = new_id
-    session.commit()
+    if sent or db_check_date(num):
+        sms = SMSC()
+        message = sms_message(sms_id)
+        sms.send_sms(num, message, id=new_id, sender='sms')
+        sent.sms_id = new_id
+        session.commit()
 
 
 def sms_message(key, mes=None):
     """
     Возаращает один из ответов в диалоге с клиентом
     :param key: str dict key
+    :param mes: str
     :return: str dict value
     """
     messages = {
