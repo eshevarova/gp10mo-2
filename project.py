@@ -1,5 +1,5 @@
 from flask import Flask, request, Response
-from iteration_db_sms import add_to_db, first_sms
+from iteration_db_sms import add_to_db, first_sms, db_check_date
 from clean_phone import clean_user_phone
 import json
 
