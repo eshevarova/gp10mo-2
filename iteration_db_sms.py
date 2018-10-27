@@ -1,7 +1,7 @@
 from db import Clients, session, Sent, Received
 from smsc_api import *
 import time
-
+import datetime
 
 def add_to_db(phone, name):
 
@@ -18,24 +18,45 @@ def add_to_db(phone, name):
         session.commit()
 
 
+def db_check_date(num):
+    """
+    If there is a repeated request through the form, the difference in dates is checked
+
+    :param num:
+    :return:
+    """
+    client = session.query(Clients).filter(Clients.phone == num).first()
+    current_date = datetime.date.today()
+    return current_date - client.date_added >= datetime.timedelta(1)
+
+
 def first_sms(num):
+    """
+    Send the very first sms
+    :param num:
+    :return:
+    """
     sms_id = 'not_send'
     new_id = 'new'
     sent = session.query(Sent).filter(Sent.phone == num and Sent.sms_id == sms_id).first()
-    sms = SMSC()
-    message = sms_message(sms_id)
-    sms.send_sms(num, message, id=new_id, sender='sms')
-    sent.sms_id = new_id
-    session.commit()
+    if sent or db_check_date(num):
+        sms = SMSC()
+        message = sms_message(sms_id)
+        sms.send_sms(num, message, id=new_id, sender='sms')
+        sent.sms_id = new_id
+        sent.client.date_added = datetime.date.today()  # обновление даты в табл клиента
+        session.commit()
 
 
 def sms_message(key, mes=None):
     """
     Возаращает один из ответов в диалоге с клиентом
     :param key: str dict key
+    :param mes: str
     :return: str dict value
     """
     messages = {
+<<<<<<< HEAD
         'not_send': 'Здравствуйте! Для расчета стоимости доставки отправьте в ответном СМС цифру 1. Для получения счет-договора - цифру 2.',
 
         'new': [
@@ -64,8 +85,47 @@ def sms_message(key, mes=None):
         'address': 'Благодарность',
         'email': 'ФИО',
         'fio': 'Благодарность договор на почту',
+=======
+                'not_send': 'Здравствуйте! Для расчета стоимости доставки отправьте в ответном СМС цифру 1, для получения счет-договора - цифру 2.',
 
+                'new': [
+                        'Укажите Ваш город.',
+                        'Для приобретения как частное лицо отправьте в ответном СМС цифру 1, на организацию - цифру 2.',
+                        'В ближайшее время наш специалист свяжется с Вами.'
+                ],
 
+                'city': [
+                        'Доставка в пределах МКАД - 700 руб. Для оплаты наличными при получении отправьте в ответном СМС цифру 1, для оплаты по счету - цифру 2.',
+                        'Доставка по Нижнему Новгороду - 500 руб. Для оплаты наличными при получении отправьте в ответном СМС цифру 1, для оплаты по счету - цифру 2.',
+                ],
+
+                'org': [
+                        'Укажите в ответном СМС Вашу электронную почту.',
+                        'Отправьте карточку фирмы (реквизиты) на электронную почту shev91@list.ru. В теме письма укажите "Заказ с сайта 15000, подарок".',
+                        'К сожалению, запрос не распознан. Вы можете позвонить нам прямо сейчас по телефону +79778088970.'
+                ],
+
+                'msk': [
+                        'Отправьте в ответном СМС адрес доставки.',
+                        'Для выставления счет-договора отправьте в ответном СМС Вашу электронную почту.'
+                ],
+
+                'nn': [
+                        'Отправьте в ответном СМС адрес доставки.',
+                        'Для выставления счет-договора отправьте в ответном СМС Вашу электронную почту.'
+                ],
+
+                'cdek': [
+                        'Доставка до города N - *** руб. Для выставления счет-договора отправьте в ответном СМС Вашу электронную почту.',
+                        'К сожалению, в указанном Вами городе отсутствуют филиалы СДЭК. тут дописать'
+                ],
+
+                'address': 'Благодарим за Ваши ответы! В ближайшее время с Вами свяжется наш специалист для уточнения даты и времени доставки.',
+>>>>>>> 10719347cc35993528fd418ccb167a1ce88e1df6
+
+                'email': 'Укажите в ответном СМС Ваши ФИО.',
+
+                'fio': 'Благодарим за запрос. В ближайшее время счет-договор придет на Вашу электронную почту.',
     }
     if mes == '1':
         return messages.get(key)[0]
