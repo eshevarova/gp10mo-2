@@ -138,8 +138,9 @@ def get_answers(sms_id, phone, mes):
     :return:
     """
     answer = Received(sms_id=sms_id, phone=phone, mes=mes)  # полученный ответ записываем в базу
-    client = session.query(Clients).filter(Clients.phone == phone).first() # получаем клиента для обновления таблицы
-    sent = session.query(Sent).filter(Sent.phone == phone and Sent.sms_id == sms_id).first() # отправл смс
+    client = session.query(Clients).filter(Clients.phone == phone).first()  # получаем клиента для обновления таблицы
+    sent = session.query(Sent).filter(Sent.phone == phone and Sent.sms_id == sms_id).first()  # отправл смс
+    new_id, client_mes = '', ''
 
     if sms_id == 'new':
 
@@ -147,14 +148,17 @@ def get_answers(sms_id, phone, mes):
             '''
             "Укажите Ваш город."
             '''
-            sent.sms_id = 'city'
+            client_mes = 1
+            new_id = 'city'
+            sent.sms_id = new_id
         elif mes.strip() == '2':
             '''
             Если планируете приобретение как частное лицо, пришлите
             в ответном СМС цифру 1, если на организацию цифру 2
             '''
-            print('Запрос формы организации %s' % phone)
-            sent.sms_id = 'org'
+            client_mes = 2
+            new_id = 'org'
+            sent.sms_id = new_id
         else:
             '''
             "В ближайшее время наш специалист свяжется с Вами и ответит на все
@@ -202,8 +206,10 @@ def get_answers(sms_id, phone, mes):
         'Благодарность договор на почту'
         client.full_name = mes
 
-    # дописать остальные кейсы
 
+
+    # дописать остальные кейсы
+    send_sms(phone, new_id, client_mes)
     session.add(answer)
     session.commit()
 
