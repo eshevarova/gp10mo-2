@@ -1,7 +1,5 @@
 import requests
 import json
-import zipfile
-import io
 import xlwt
 import os
 import shutil
@@ -10,45 +8,6 @@ from xlrd import open_workbook
 from datetime import datetime, timedelta
 from xlutils.copy import copy
 from project_files.cdek_parameters import *
-
-
-def get_file(url):
-    result = requests.get(url)
-    file_zip = zipfile.ZipFile(io.BytesIO(result.content))
-    folder = zipfile.ZipFile.namelist(file_zip)[0]
-
-    new_path = os.getcwd()
-
-    if os.path.exists(folder):
-        shutil.rmtree(folder)
-
-    if os.path.exists('CDEK_city.xls'):
-        os.unlink('CDEK_city.xls')
-
-    file_zip.extractall()
-
-    for the_file in os.listdir(folder):
-        file_path = os.path.join(folder, the_file)
-        if 'RUS' not in file_path:
-            os.unlink(file_path)
-        else:
-            shutil.move(file_path, os.path.join(new_path, the_file))
-            os.rename(os.path.join(new_path, the_file), os.path.join(new_path, 'CDEK_city.xls'))
-    os.rmdir(folder)
-
-
-def load_file():
-    url = 'https://www.cdek.ru/website/edostavka/upload/custom/files/CDEK_city.zip'
-    with open('date.txt', 'r', encoding='utf-8') as f:
-        date_start = f.read()
-    date_start = datetime.strptime(date_start, '%Y-%m-%d').date()
-    date_now = datetime.today().date()
-    delta = date_now - date_start
-    week = timedelta(days=7)
-    if delta > week:
-        get_file(url)
-        with open('date.txt', 'w', encoding='utf-8') as f:
-            f.write(date_now.strftime('%Y-%m-%d'))
 
 
 def get_id(city):
