@@ -1,8 +1,7 @@
-﻿from cdek_utils import load_file, get_id, get_price
+﻿from cdek_utils import get_id, get_price
 
 
 def cdek_delivery(city):
-    load_file()
     city_id = get_id(city)
     if city_id in ('Empty', 'Overload'):
         return city_id

@@ -1,5 +1,6 @@
 from flask import Flask, request, Response
-from iteration_db_sms import add_to_db, first_sms, db_check_date
+from iteration_db_sms import add_to_db, first_sms, 
+    db_check_date, sms_message, send_sms, get_answers
 from clean_phone import clean_user_phone
 import json
 
@@ -41,14 +42,24 @@ def get_client_data():
 @app.route("/sms", methods = ['POST'])
 def get_sms_data():
     data = request.get_json()
+
     if data['sms_id']:
         sms_id = data['sms_id']
+    else:
+        return json.dumps({'status': 'Bad Request', 'code': 400})
+
     if data['mes']:
         message = data['mes']
+    else:
+        return json.dumps({'status': 'Bad Request', 'code': 400})
+
     if data['phone']:
         client_tel = data['phone']
+    else:
+        return json.dumps({'status': 'Bad Request', 'code': 400})
 
-    
+    get_answers(sms_id, client_tel, message)
+
     return json.dumps({'status': 'Ok', 'code': 200})
         
 

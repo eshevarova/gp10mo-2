@@ -1,4 +1,5 @@
 from db import Clients, session, Sent, Received
+from cdek_main import cdek_delivery
 from smsc_api import *
 import time
 import datetime
@@ -90,7 +91,7 @@ def sms_message(key, mes=None):
                 ],
 
                 'cdek': [
-                        ['Доставка - ', ' руб. Для выставления счет-договора отправьте в ответном СМС Вашу электронную почту.'],
+                        ['Доставка -', 'руб. Для выставления счет-договора отправьте в ответном СМС Вашу электронную почту.'],
                         'К сожалению, не удалось рассчитать доставку автоматически. Для расчета доставки менеджером отправьте Ваши ФИО, \
                         номер телефона и город на электронную почту shev91@list.ru. В теме укажите "Заказ с сайта 15000, подарок".'
                 ],
@@ -110,6 +111,10 @@ def sms_message(key, mes=None):
         return messages.get(key)[1]
     elif key in ['new', 'org', 'msk', 'nn'] and mes not in ['1', '2']:
         return messages.get(key)[2]
+    elif key == 'city' and mes == 'error':
+        return messages.get('cdek')[1]
+    elif key == 'city' and type(mes) is int:
+        return '%s %s %s' % (messages.get('cdek')[0][0], price, messages.get('cdek')[0][1])
     else:
         return messages.get(key)
 
@@ -183,9 +188,20 @@ def get_answers(sms_id, phone, mes):
             '''
             sent.sms_id = 'nn'
         else:
-            # проверка на сдэк
-            pass
-        client.city = mes.strip().title()
+            town = mes.strip().title()
+
+            price_cdek = cdek_delivery(city)
+
+            if price_cdek in ('Empty', 'Overload', 'No delivery'):
+                client_mes = 'error'
+                new_id = 'zapros!!!'
+                sent.sms_id = new_id
+            else:
+                client_mes = price_cdek
+                new_id = 'email'
+                sent.sms_id = new_id
+
+        client.city = town
 
     elif sms_id == 'msk' or sms_id == 'nn':
 
