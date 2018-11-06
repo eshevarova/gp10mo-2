@@ -1,11 +1,10 @@
-def get_bill(full_name, city, tel):
+from xlrd import open_workbook
+import xlwt
+import os
+from datetime import datetime, timedelta
+from xlutils.copy import copy
 
-    with open('num.txt', 'r', encoding='utf-8') as f:
-        num = f.read()
-
-    with open('num.txt', 'w', encoding='utf-8') as f:
-        new_num = str(int(num) + 1)
-        f.write(new_num)
+def get_bill(full_name, city, tel, number):
 
     filename = 'Schet_na_oplatu.xls'
     file_path = os.path.join(os.getcwd(), filename)
@@ -19,12 +18,12 @@ def get_bill(full_name, city, tel):
     date_now = datetime.now()
     delta = timedelta(days=3)
 
-    num_and_date = 'Счет-договор на оплату № %s от %s' % (num, date_now.strftime('%d.%m.%Y'))
+    num_and_date = 'Счет-договор на оплату № %s от %s' % (number, date_now.strftime('%d.%m.%Y'))
     client_data = '%s, г. %s, тел.: %s' % (full_name, city, tel)
     date_pay = date_now + delta
     latest_pay = 'Оплатить не позднее %s' % (date_pay.strftime('%d.%m.%Y'))
     
-    new_filename = 'Schet_na_oplatu_%s_от_%s.xls' % (num, date_now.strftime('%d.%m.%Y'))
+    new_filename = 'Schet_na_oplatu_%s_от_%s.xls' % (number, date_now.strftime('%d.%m.%Y'))
     new_path = os.path.join(os.getcwd(), 'bills')
     new_path = os.path.join(new_path, new_filename)
 
@@ -35,7 +34,4 @@ def get_bill(full_name, city, tel):
 
 
     wb.save(new_path)
-
-
-if __name__ == "__main__":
-    get_bill('Шеварова Екатерина Алексеевна', 'Москва', '+79165235185')
+    return new_path
