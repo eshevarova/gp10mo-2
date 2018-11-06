@@ -147,7 +147,7 @@ def get_answers(sms_id, phone, mes):
     answer = Received(sms_id=sms_id, phone=phone, mes=mes)  # полученный ответ записываем в базу
     client = session.query(Clients).filter(Clients.phone == phone).first()  # получаем клиента для обновления таблицы
     sent = session.query(Sent).filter(Sent.phone == phone and Sent.sms_id == sms_id).first()  # отправл смс
-    new_id, client_mes = '', ''
+    new_id = ''
 
     if sms_id == 'new':
 
@@ -155,7 +155,6 @@ def get_answers(sms_id, phone, mes):
             '''
             "Укажите Ваш город."
             '''
-            client_mes = 1
             new_id = 'city'
             sent.sms_id = new_id
         elif mes.strip() == '2':
@@ -163,7 +162,6 @@ def get_answers(sms_id, phone, mes):
             Если планируете приобретение как частное лицо, пришлите
             в ответном СМС цифру 1, если на организацию цифру 2
             '''
-            client_mes = 2
             new_id = 'org'
             sent.sms_id = new_id
         else:
@@ -172,7 +170,6 @@ def get_answers(sms_id, phone, mes):
             интересующие Вас вопросы."
             '''
             new_id = 'error'
-            client_mes = mes
             sent.sms_id = new_id
 
     elif sms_id == 'city':
@@ -193,11 +190,11 @@ def get_answers(sms_id, phone, mes):
             price_cdek = cdek_delivery(city)
 
             if price_cdek in ('Empty', 'Overload', 'No delivery'):
-                client_mes = 'error'
+                mes = 'error'
                 new_id = 'zapros!!!'
                 sent.sms_id = new_id
             else:
-                client_mes = price_cdek
+                mes = price_cdek
                 new_id = 'email'
                 sent.sms_id = new_id
 
@@ -232,7 +229,7 @@ def get_answers(sms_id, phone, mes):
 
 
     # дописать остальные кейсы
-    send_sms(phone, sms_id, new_id, client_mes)
+    send_sms(phone, sms_id, new_id, mes)
 
     session.add(answer)
     session.commit()
