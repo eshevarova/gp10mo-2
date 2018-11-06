@@ -1,12 +1,10 @@
 import requests
 import json
-import xlwt
 import os
 import shutil
 from hashlib import md5
 from xlrd import open_workbook
-from datetime import datetime, timedelta
-from xlutils.copy import copy
+from datetime import datetime
 from project_files.cdek_parameters import *
 
 
