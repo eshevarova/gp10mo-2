@@ -1,5 +1,6 @@
-from db import Clients, session, Sent, Received
+from db import Clients, session, Sent, Received, Bills
 from cdek_main import cdek_delivery
+from bill_excel import get_bill
 from smsc_api import *
 import time
 import datetime
@@ -102,7 +103,7 @@ def sms_message(key, mes=None):
 
                 'fio': 'Благодарим за запрос. В ближайшее время счет-договор придет на Вашу электронную почту.',
 
-                #'error': 'К сожалению, запрос не распознан. Вы можете позвонить нам прямо сейчас по телефону +79778088970.'
+                'error': 'К сожалению, запрос не распознан. Вы можете позвонить нам прямо сейчас по телефону +79778088970.'
     }
 
     if mes == '1':
@@ -111,10 +112,15 @@ def sms_message(key, mes=None):
         return messages.get(key)[1]
     elif key in ['new', 'org', 'msk', 'nn'] and mes not in ['1', '2']:
         return messages.get(key)[2]
-    elif key == 'city' and mes == 'error':
-        return messages.get('cdek')[1]
-    elif key == 'city' and type(mes) is int:
-        return '%s %s %s' % (messages.get('cdek')[0][0], price, messages.get('cdek')[0][1])
+    elif key == 'city':
+        if mes == 'Москва':
+            return messages.get(key)[0]
+        elif mes == 'Нижний Новгород':
+            return messages.get(key)[1]
+        elif mes == 'error':
+            return messages.get('cdek')[1]
+        elif type(mes) is int:
+            return '%s %s %s' % (messages.get('cdek')[0][0], price, messages.get('cdek')[0][1])
     else:
         return messages.get(key)
 
@@ -132,7 +138,7 @@ def send_sms(num, old_sms_id, new_sms_id, mes=None):
     sms.send_sms(num, message, id=new_sms_id, sender='sms')
     time.sleep(5)
     # получение статуса доставки если надо
-    status = sms.get_status(new_sms_id, num)
+    # status = sms.get_status(new_sms_id, num)
 
 
 def get_answers(sms_id, phone, mes):
@@ -147,90 +153,105 @@ def get_answers(sms_id, phone, mes):
     answer = Received(sms_id=sms_id, phone=phone, mes=mes)  # полученный ответ записываем в базу
     client = session.query(Clients).filter(Clients.phone == phone).first()  # получаем клиента для обновления таблицы
     sent = session.query(Sent).filter(Sent.phone == phone and Sent.sms_id == sms_id).first()  # отправл смс
-    new_id = ''
+    bill_contract = Bills(client_id, bill_num)
+    new_id, client_city = '', ''
 
     if sms_id == 'new':
 
         if mes.strip() == '1':
-            '''
-            "Укажите Ваш город."
-            '''
+
             new_id = 'city'
             sent.sms_id = new_id
+
         elif mes.strip() == '2':
-            '''
-            Если планируете приобретение как частное лицо, пришлите
-            в ответном СМС цифру 1, если на организацию цифру 2
-            '''
+
             new_id = 'org'
             sent.sms_id = new_id
+
         else:
-            '''
-            "В ближайшее время наш специалист свяжется с Вами и ответит на все
-            интересующие Вас вопросы."
-            '''
+
             new_id = 'error'
             sent.sms_id = new_id
 
     elif sms_id == 'city':
 
         if mes.strip().title() == 'Москва':
-            """
-            Доставка по Мск 700 р 1 или 2
-            """
-            sent.sms_id = 'msk'
-        elif mes.strip().title() == 'Нижний Новгород':
-            '''
-            Доставка по НН 500р 1 или 2
-            '''
-            sent.sms_id = 'nn'
-        else:
-            town = mes.strip().title()
 
-            price_cdek = cdek_delivery(city)
+            new_id = 'msk'
+            sent.sms_id = new_id
+
+        elif mes.strip().title() == 'Нижний Новгород':
+
+            new_id = 'nn'
+            sent.sms_id = new_id
+
+        else:
+
+            client_city = mes.strip().title()
+            print(client_city)
+
+            price_cdek = cdek_delivery(client_city)
 
             if price_cdek in ('Empty', 'Overload', 'No delivery'):
+
                 mes = 'error'
-                new_id = 'zapros!!!'
+                new_id = 'No delivery'
                 sent.sms_id = new_id
+
             else:
+
                 mes = price_cdek
                 new_id = 'email'
                 sent.sms_id = new_id
 
-        client.city = town
+        client.city = client_city
 
     elif sms_id == 'msk' or sms_id == 'nn':
 
         if mes.strip() == '1':
-            print('Запрос адреса доставки')
-            sent.sms_id = 'address'
+
+            new_id = 'address'
+            sent.sms_id = new_id
+
         elif mes.strip() == '2':
-            print('Запрос  почты для счета')
-            sent.sms_id = 'email'
+
+            new_id = 'email'
+            sent.sms_id = new_id
+
         else:
-            pass
+            
+            new_id = 'error'
+            sent.sms_id = new_id
 
     elif sms_id == 'address':
-        'Благодарность'
+
+        new_id = 'end'
+        sent.sms_id = new_id
         client.full_address = mes
 
     elif sms_id == 'email':
-        '''
-        ФИО
-        '''
-        sent.sms_id = 'fio'
+
+        new_id = 'fio'
+        sent.sms_id = new_id
         client.email = mes
 
     elif sms_id == 'fio':
-        'Благодарность договор на почту'
+        
+        new_id = 'end'
+        sent.sms_id = new_id
         client.full_name = mes
 
 
-
-    # дописать остальные кейсы
     send_sms(phone, sms_id, new_id, mes)
+"""
+    if new_id == 'end':
+        if sms_id == 'address':
+            # отправляем адрес на ордер
+        elif sms_id = 'fio':
+            get_bill(client.full_name, client.city, client.phone)
+            # отправка счета на почту клиента
 
+"""
     session.add(answer)
     session.commit()
 
