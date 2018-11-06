@@ -153,7 +153,6 @@ def get_answers(sms_id, phone, mes):
     answer = Received(sms_id=sms_id, phone=phone, mes=mes)  # полученный ответ записываем в базу
     client = session.query(Clients).filter(Clients.phone == phone).first()  # получаем клиента для обновления таблицы
     sent = session.query(Sent).filter(Sent.phone == phone and Sent.sms_id == sms_id).first()  # отправл смс
-    bill_contract = Bills(client_id, bill_num)
     new_id, client_city = '', ''
 
     if sms_id == 'new':
@@ -242,18 +241,27 @@ def get_answers(sms_id, phone, mes):
         client.full_name = mes
 
 
-    send_sms(phone, sms_id, new_id, mes)
-"""
+    #send_sms(phone, sms_id, new_id, mes)
+
     if new_id == 'end':
         if sms_id == 'address':
+            pass
             # отправляем адрес на ордер
-        elif sms_id = 'fio':
-            get_bill(client.full_name, client.city, client.phone)
-            # отправка счета на почту клиента
+        elif sms_id == 'fio':
+            new_bill_contract = Bills(client_id=client.id)
 
-"""
+            try:
+                number = session.query(Bills.bill_num).filter(Bills.id == new_bill_contract.id - 1) + 1
+            except:
+                number = 18769
+            
+            file_path = get_bill(client.full_name, client.city, client.phone, number)
+            # отправка счета на почту клиента
+            new_bill_contract.bill_num = number
+            new_bill_contract.file_path = file_path
+            session.add(new_bill_contract)
+            session.commit()
+
+
     session.add(answer)
     session.commit()
-
-
-
