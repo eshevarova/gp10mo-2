@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return 'Hello!'
+    return 'Hello Guys!'
 
 
 @app.route("/clients", methods =['POST', 'GET'])

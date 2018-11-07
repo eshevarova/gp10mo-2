@@ -177,7 +177,7 @@ def get_answers(sms_id, phone, mes):
             sent.sms_id = new_id
 
     elif sms_id == 'city':
-
+        client_city = mes.strip().title()
         if mes.strip().title() == 'Москва':
 
             new_id = 'msk'
@@ -189,10 +189,6 @@ def get_answers(sms_id, phone, mes):
             sent.sms_id = new_id
 
         else:
-
-            client_city = mes.strip().title()
-            print(client_city)
-
             price_cdek = cdek_delivery(client_city)
 
             if price_cdek in ('Empty', 'Overload', 'No delivery'):
@@ -252,7 +248,7 @@ def get_answers(sms_id, phone, mes):
         if sms_id == 'address':
             email = TO_WHOM_EMAIL
             subject = 'Заказ с сайта на доставку по Москве или Нижнему Новгороду'
-            message = 'Доставка по городу %s.\nИмя клиента: %s\nАдрес доставки: %s\n.Телефон: %s' % (client.city, client.name, client.full_address, client.phone)
+            message = '%s\n%s\n%s, %s' % (client.name, client.phone, client.city, client.full_address)
             sendmail(email, subject, message)
 
         elif sms_id == 'fio':
