@@ -38,10 +38,9 @@ def get_client_data():
         return json.dumps({'status': 'Method Not Allowed', 'code': 405})
 
 
-@app.route("/sms", methods = ['POST'])
+@app.route("/sms", methods = ['POST', 'GET'])
 def get_sms_data():
-    data = request.get_json()
-
+    
     if data.get('sms_id', 0):
         sms_id = data['sms_id']
     else:
@@ -60,7 +59,7 @@ def get_sms_data():
     get_answers(sms_id, client_tel, message)
 
     return json.dumps({'status': 'Ok', 'code': 200})
-        
+   
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
