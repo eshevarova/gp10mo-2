@@ -41,6 +41,7 @@ class Received(Base):
     __tablename__ = 'received'
     id = Column(Integer(), primary_key=True)
     sms_id = Column(String(50), index=True)
+    input_id = Column(Integer())
     phone = Column(String(50), ForeignKey('clients.phone'), index=True)
     mes = Column(Text, index=True)
     sent = Column(DateTime)  # conv to time?
