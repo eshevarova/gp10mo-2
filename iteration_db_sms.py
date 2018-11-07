@@ -1,6 +1,10 @@
 from db import Clients, session, Sent, Received, Bills
 from cdek_main import cdek_delivery
 from bill_excel import get_bill
+from email_file import send_attachment
+from email_text import sendmail
+from project_files.bill_parameters import FIRST_NUMBER
+from project_files.mail_parameters import TO_WHOM_EMAIL
 from smsc_api import *
 import time
 import datetime
@@ -241,22 +245,29 @@ def get_answers(sms_id, phone, mes):
         client.full_name = mes
 
 
-    #send_sms(phone, sms_id, new_id, mes)
+    send_sms(phone, sms_id, new_id, mes)
 
     if new_id == 'end':
+
         if sms_id == 'address':
-            pass
-            # отправляем адрес на ордер
+            email = TO_WHOM_EMAIL
+            subject = 'Заказ с сайта на доставку по Москве или Нижнему Новгороду'
+            message = 'Доставка по городу %s.\nИмя клиента: %s\nАдрес доставки: %s\n.Телефон: %s' % (client.city, client.name, client.full_address, client.phone)
+            sendmail(email, subject, message)
+
         elif sms_id == 'fio':
             new_bill_contract = Bills(client_id=client.id)
 
             try:
                 number = session.query(Bills.bill_num).filter(Bills.id == new_bill_contract.id - 1) + 1
             except:
-                number = 18769
+                number = FIRST_NUMBER
+            # ДОПИСАТЬ НАЗВАНИЕ ОШИБКИ
             
             file_path = get_bill(client.full_name, client.city, client.phone, number)
-            # отправка счета на почту клиента
+            subject = 'Счет на оплату ГП10МО'
+            text = 'Добрый день!\nВаш счет!'
+            send_attachment(client.email, subject, text, file_path)
             new_bill_contract.bill_num = number
             new_bill_contract.file_path = file_path
             session.add(new_bill_contract)

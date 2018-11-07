@@ -13,8 +13,8 @@ except ImportError:
     from urllib.parse import quote
 
 # Константы для настройки библиотеки
-SMSC_LOGIN = login  # логин клиента
-SMSC_PASSWORD = password  # пароль
+SMSC_LOGIN = LOGIN_SMS  # логин клиента
+SMSC_PASSWORD = PASSWORD_SMS  # пароль
 SMSC_POST = False  # использовать метод POST
 SMSC_HTTPS = False  # использовать HTTPS протокол
 SMSC_CHARSET = "utf-8"  # кодировка сообщения (windows-1251 или koi8-r), по умолчанию используется utf-8
