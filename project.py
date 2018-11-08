@@ -37,29 +37,5 @@ def get_client_data():
     else:
         return json.dumps({'status': 'Method Not Allowed', 'code': 405})
 
-
-@app.route("/sms", methods = ['POST', 'GET'])
-def get_sms_data():
-    
-    if data.get('sms_id', 0):
-        sms_id = data['sms_id']
-    else:
-        return json.dumps({'status': 'Bad Request', 'code': 400})
-
-    if data.get('mes', 0):
-        message = data['mes']
-    else:
-        return json.dumps({'status': 'Bad Request', 'code': 400})
-
-    if data.get('phone', 0):
-        client_tel = data['phone']
-    else:
-        return json.dumps({'status': 'Bad Request', 'code': 400})
-
-    get_answers(sms_id, client_tel, message)
-
-    return json.dumps({'status': 'Ok', 'code': 200})
-   
-
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
