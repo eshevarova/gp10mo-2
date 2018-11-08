@@ -12,7 +12,7 @@ from project_files.mail_parameters import *
 logging.basicConfig(filename='attachment.log', level=logging.ERROR, format=' %(asctime)s - %(levelname)s - %(messages)s')
 
 
-def send_attachment(email, subject, text, file_path):
+def send_attachment(email, subject, text, file_path=None):
     from_address = FROM_WHOM_EMAIL  # от кого
     login = LOGIN_EMAIL  # логин на сервере
     password = PASSWORD_EMAIL  # пароль
@@ -34,6 +34,8 @@ def send_attachment(email, subject, text, file_path):
         message.attach(p)
     except FileNotFoundError as err:
         print(err)
+    except TypeError:
+        pass
 
     server = smtplib.SMTP(smtpserver)
     print(server.set_debuglevel(1))
@@ -51,4 +53,4 @@ def send_attachment(email, subject, text, file_path):
         server.quit()
 
 if __name__ == '__main__':
-    send_attachment('kat121193@icloud.com', 'Schet', 'Hello', 'bills\\Schet_na_oplatu_18769_от_08.11.2018.xls')
+    send_attachment('kat121193@yandex.ru', 'Schet', 'Hello', 'bills\\Schet_na_oplatu_18769_от_08.11.2018.xls')
