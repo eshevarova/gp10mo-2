@@ -1,8 +1,10 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+from os.path import basename
 import logging
 from project_files.mail_parameters import *
 
@@ -23,13 +25,13 @@ def send_attachment(email, subject, text, file_path):
     message['Subject'] = subject
 
     message.attach(MIMEText(text, 'plain', 'utf-8'))
+
     try:
         with open(file_path, 'rb') as attachment:
-            p = MIMEBase('application', 'octet-stream')
-            p.set_payload(attachment.read())
-            encoders.encode_base64(p)
-            p.add_header('Content-Disposition', "attachment; filename= {}".format(file_path))
-            message.attach(p)
+            p = MIMEApplication(attachment.read(), Name=basename(file_path))
+
+        p['Content-Disposition'] = 'attachment; filename= {}'.format(basename(file_path))
+        message.attach(p)
     except FileNotFoundError as err:
         print(err)
 
@@ -47,3 +49,6 @@ def send_attachment(email, subject, text, file_path):
         logging.error(err3)
     finally:
         server.quit()
+
+if __name__ == '__main__':
+    send_attachment('kat121193@icloud.com', 'Schet', 'Hello', 'bills\\Schet_na_oplatu_18769_от_08.11.2018.xls')
