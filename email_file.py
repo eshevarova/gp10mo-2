@@ -53,4 +53,4 @@ def send_attachment(email, subject, text, file_path=None):
         server.quit()
 
 if __name__ == '__main__':
-    send_attachment('kat121193@yandex.ru', 'Schet', 'Hello', 'bills\\Schet_na_oplatu_18769_от_08.11.2018.xls')
+    send_attachment('kat121193@yandex.ru', 'Счет', 'Приветик', 'bills/Schet_na_oplatu_18769_от_06.11.2018.xls')
