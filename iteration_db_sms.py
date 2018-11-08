@@ -125,6 +125,8 @@ def sms_message(key, mes=None):
             return messages.get('cdek')[1]
         elif type(mes) is int:
             return '%s %s %s' % (messages.get('cdek')[0][0], price, messages.get('cdek')[0][1])
+    elif key == 'end':
+        return messages.get('error')
     else:
         return messages.get(key)
 
@@ -146,17 +148,9 @@ def send_sms(num, old_sms_id, new_sms_id, mes=None):
 
 
 def get_answers(sms_id, phone, mes):
-    """
-    GOD FUNCTION!
 
-    :param sms_id:
-    :param phone:
-    :param mes:
-    :return:
-    """
-    answer = Received(sms_id=sms_id, phone=phone, mes=mes)  # полученный ответ записываем в базу
-    client = session.query(Clients).filter(Clients.phone == phone).first()  # получаем клиента для обновления таблицы
-    sent = session.query(Sent).filter(Sent.phone == phone and Sent.sms_id == sms_id).first()  # отправл смс
+    client = session.query(Clients).filter(Clients.phone == phone).first()
+    sent = session.query(Sent).filter(Sent.phone == phone).first()
     new_id, client_city = '', ''
 
     if sms_id == 'new':
@@ -177,7 +171,9 @@ def get_answers(sms_id, phone, mes):
             sent.sms_id = new_id
 
     elif sms_id == 'city':
+
         client_city = mes.strip().title()
+        
         if mes.strip().title() == 'Москва':
 
             new_id = 'msk'
@@ -240,7 +236,10 @@ def get_answers(sms_id, phone, mes):
         sent.sms_id = new_id
         client.full_name = mes
 
-
+    elif sms_id == 'end':
+        send_sms(phone, sms_id, sms_id, 'error')
+        return
+        
     send_sms(phone, sms_id, new_id, mes)
 
     if new_id == 'end':
@@ -269,6 +268,4 @@ def get_answers(sms_id, phone, mes):
             session.add(new_bill_contract)
             session.commit()
 
-
-    session.add(answer)
     session.commit()
