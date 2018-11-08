@@ -21,6 +21,7 @@ class Clients(Base):
     full_name = Column(String(255))
     city = Column(String(50))
     full_address = Column(String(255))
+    email = Column(String(50))
     company = Column(String(50))
     date_added = Column(DATE, default=datetime.date.today())
 
