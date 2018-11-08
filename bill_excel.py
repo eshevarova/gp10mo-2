@@ -26,6 +26,7 @@ def get_bill(full_name, city, tel, number):
     new_filename = 'Schet_na_oplatu_%s_от_%s.xls' % (number, date_now.strftime('%d.%m.%Y'))
     new_path = os.path.join(os.getcwd(), 'bills')
     new_path = os.path.join(new_path, new_filename)
+    path_to_attach = os.path.join('bills', new_filename)
 
     w_sheet.write(9, 1, num_and_date)
     w_sheet.write(16, 6, client_data)
@@ -34,4 +35,4 @@ def get_bill(full_name, city, tel, number):
 
 
     wb.save(new_path)
-    return new_path
+    return path_to_attach
