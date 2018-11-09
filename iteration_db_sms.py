@@ -123,7 +123,7 @@ def sms_message(key, mes=None):
         elif mes == 'error':
             return messages.get('cdek')[1]
         elif type(mes) is int:
-            return '%s %s %s' % (messages.get('cdek')[0][0], price, messages.get('cdek')[0][1])
+            return '%s %s %s' % (messages.get('cdek')[0][0], mes, messages.get('cdek')[0][1])
     elif key == 'end':
         return messages.get('error')
     else:
@@ -172,19 +172,21 @@ def get_answers(sms_id, phone, mes):
     elif sms_id == 'city':
 
         client_city = mes.strip().title()
+        print(client_city)
         
-        if mes.strip().title() == 'Москва':
+        if client_city == 'Москва':
 
             new_id = 'msk'
             sent.sms_id = new_id
 
-        elif mes.strip().title() == 'Нижний Новгород':
+        elif client_city == 'Нижний Новгород':
 
             new_id = 'nn'
             sent.sms_id = new_id
 
         else:
             price_cdek = cdek_delivery(client_city)
+            print(price_cdek)
 
             if price_cdek in ('Empty', 'Overload', 'No delivery'):
 

@@ -18,7 +18,7 @@ def get_id(city):
     names_num = 0
     for row in range(1, work_sheet.nrows):
         if isinstance(work_sheet.cell_value(row, 2), str):
-            if city == work_sheet.cell_value(row, 2).split(', ')[0]:
+            if city.title() == work_sheet.cell_value(row, 2).split(', ')[0].title():
                 names_num += 1
                 city_id = work_sheet.cell_value(row, 0)
             else:
