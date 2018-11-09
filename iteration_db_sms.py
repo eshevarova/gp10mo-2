@@ -2,7 +2,6 @@ from db import Clients, session, Sent, Received, Bills
 from cdek_main import cdek_delivery
 from bill_excel import get_bill
 from email_file import send_attachment
-from email_text import sendmail
 from project_files.bill_parameters import FIRST_NUMBER
 from project_files.mail_parameters import TO_WHOM_EMAIL
 from smsc_api import *
@@ -167,7 +166,7 @@ def get_answers(sms_id, phone, mes):
 
         else:
 
-            new_id = 'error'
+            new_id = 'end'
             sent.sms_id = new_id
 
     elif sms_id == 'city':
@@ -190,7 +189,7 @@ def get_answers(sms_id, phone, mes):
             if price_cdek in ('Empty', 'Overload', 'No delivery'):
 
                 mes = 'error'
-                new_id = 'No delivery'
+                new_id = 'end'
                 sent.sms_id = new_id
 
             else:
@@ -200,6 +199,21 @@ def get_answers(sms_id, phone, mes):
                 sent.sms_id = new_id
 
         client.city = client_city
+
+    elif sms_id == 'org':
+
+        if mes.strip() == '1':
+
+            new_id = 'email'
+            sent.sms_id = new_id
+
+        elif mes.strip() == '2':
+            new_id = 'end'
+            sent.sms_id = new_id
+
+        else:
+            new_id = 'end'
+            sent.sms_id = new_id
 
     elif sms_id == 'msk' or sms_id == 'nn':
 
@@ -215,7 +229,7 @@ def get_answers(sms_id, phone, mes):
 
         else:
             
-            new_id = 'error'
+            new_id = 'end'
             sent.sms_id = new_id
 
     elif sms_id == 'address':
@@ -237,7 +251,9 @@ def get_answers(sms_id, phone, mes):
         client.full_name = mes
 
     elif sms_id == 'end':
-        send_sms(phone, sms_id, sms_id, 'error')
+        new_id = 'end'
+        sent.sms_id = new_id
+        send_sms(phone, sms_id, new_id, 'error')
         return
         
     send_sms(phone, sms_id, new_id, mes)
@@ -248,7 +264,7 @@ def get_answers(sms_id, phone, mes):
             email = TO_WHOM_EMAIL
             subject = 'Заказ с сайта на доставку по Москве или Нижнему Новгороду'
             message = '%s\n%s\n%s, %s' % (client.name, client.phone, client.city, client.full_address)
-            sendmail(email, subject, message)
+            send_attachment(email, subject, message)
 
         elif sms_id == 'fio':
             new_bill_contract = Bills(client_id=client.id)
