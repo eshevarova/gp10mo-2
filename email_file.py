@@ -6,7 +6,8 @@ from email.mime.base import MIMEBase
 from email import encoders
 from os.path import basename
 import logging
-from project_files.mail_parameters import *
+from project_files.parameters import FROM_WHOM_EMAIL, LOGIN_EMAIL, \
+                                        PASSWORD_EMAIL, SMTPSERVER
 
 
 logging.basicConfig(filename='attachment.log', level=logging.ERROR, format=' %(asctime)s - %(levelname)s - %(messages)s')

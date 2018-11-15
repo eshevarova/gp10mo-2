@@ -5,7 +5,8 @@ import shutil
 from hashlib import md5
 from xlrd import open_workbook
 from datetime import datetime
-from project_files.cdek_parameters import *
+from project_files.parameters import TEST_LOGIN, TEST_PASSWORD, VERSION, SENDER_CITY_ID, \
+                                        TARIFFS1, TARIFFS2, MODE_ID, GOODS, SERVICES 
 
 
 def get_id(city):
@@ -89,3 +90,7 @@ def get_price(city_id):
         return max(price_cdek1, price_cdek2)
     else:
         return min(price_cdek1, price_cdek2)
+
+
+if __name__ == '__main__':
+    print(get_id('Москва'))

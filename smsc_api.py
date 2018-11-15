@@ -4,7 +4,7 @@
 from datetime import datetime
 from time import sleep
 import smtplib
-from project_files.service_access import *
+from project_files.parameters import LOGIN_SMS, PASSWORD_SMS
 
 try:
     from urllib import urlopen, quote

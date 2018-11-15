@@ -2,8 +2,7 @@ from db import Clients, session, Sent, Received, Bills
 from cdek_main import cdek_delivery
 from bill_excel import get_bill
 from email_file import send_attachment
-from project_files.bill_parameters import FIRST_NUMBER
-from project_files.mail_parameters import TO_WHOM_EMAIL
+from project_files.parameters import FIRST_NUMBER, TO_WHOM_EMAIL
 from smsc_api import *
 import time
 import datetime

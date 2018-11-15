@@ -1,5 +1,5 @@
 import requests
-from project_files.service_access import *
+from project_files.parameters import LOGIN_SMS, PASSWORD_SMS
 from db import Clients, session, Sent, Received, Bills
 from iteration_db_sms import get_answers, send_sms, sms_message
 
